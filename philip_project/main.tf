@@ -75,3 +75,6 @@ resource "azurerm_linux_virtual_machine" "vm-Philip" {
   computer_name = "Philip-vm"
 }
 
+resource "time_sleep" "wait_for_ip" {
+  create_duration = "30s"  # Wait for 30 seconds
+}
