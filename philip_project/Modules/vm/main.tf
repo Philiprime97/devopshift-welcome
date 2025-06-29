@@ -1,15 +1,8 @@
-provider "azurerm" {
-  features {}
-}
 
 
 resource "azurerm_resource_group" "rg-Philip" {
   name     = "Philip-resources"
   location = var.location
-}
-
-module "rg" {
-  source = "./Modules/vm"
 }
 
 resource "azurerm_virtual_network" "vnet-Philip" {
