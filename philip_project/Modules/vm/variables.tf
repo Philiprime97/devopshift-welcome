@@ -1,15 +1,15 @@
-variable "location" {
-  default = "East US"
-}
+# variable "location" {
+#   default = "East US"
+# }
 
-variable "vm_size" {
-  default = "Standard_B1ms"
-}
+# variable "vm_size" {
+#   default = "Standard_B1ms"
+# }
 
-variable "admin_username" {
-  default = "adminuser-Philip"
-}
+# variable "admin_username" {
+#   default = "adminuser-Philip"
+# }
 
-variable "admin_password" {
-  default = "Password123!"
-}
+# variable "admin_password" {
+#   default = "Password123!"
+# }
