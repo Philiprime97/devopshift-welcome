@@ -8,9 +8,6 @@ resource "azurerm_resource_group" "rg-Philip" {
   location = var.location
 }
 
-module "rg" {
-  source = "./Modules/vm"
-}
 
 resource "azurerm_virtual_network" "vnet-Philip" {
   name                = "Philip-vnet"
@@ -81,4 +78,18 @@ resource "azurerm_linux_virtual_machine" "vm-Philip" {
 
 resource "time_sleep" "wait_for_ip" {
   create_duration = "30s"  # Wait for 30 seconds
+}
+
+
+resource "null_resource" "check_public_ip" {
+  provisioner "local-exec" {
+    command = <<EOT
+      if [ -z "${azurerm_public_ip.pip-Philip.ip_address}" ]; then
+        echo "ERROR: Public IP address was not assigned." >&2
+        exit 1
+      fi
+    EOT
+    }
+
+    depends_on = [time_sleep.wait_for_ip]
 }

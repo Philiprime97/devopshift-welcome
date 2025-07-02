@@ -1,26 +1,5 @@
 
 
-resource "azurerm_resource_group" "rg-Philip" {
-  name     = "Philip-resources"
-  location = var.location
-}
-
-resource "azurerm_virtual_network" "vnet-Philip" {
-  name                = "Philip-vnet"
-  address_space       = ["10.0.0.0/16"]
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg-Philip.name
-}
-
-
-resource "azurerm_subnet" "subnet-Philip" {
-  name                 = "Philip-subnet"
-  resource_group_name  = azurerm_resource_group.rg-Philip.name
-  virtual_network_name = azurerm_virtual_network.vnet-Philip.name
-  address_prefixes     = ["10.0.1.0/24"]
-}
-
-
 resource "azurerm_public_ip" "pip-Philip" {
   name                = "Philip-pip"
   location            = var.location
