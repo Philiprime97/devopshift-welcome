@@ -4,12 +4,12 @@ provider "azurerm" {
 }
 
 variable "yourname" {
-  default     = "yanivc"
+  default     = "philip"
   description = "Change it to your first name and the first letter of your family name: ex. yanivc - for yaniv cohen"
 }
 
 variable "vm_name" {
-  default     = "vm-yanivc"
+  default     = "vm-philip"
   description = "Change it to your first name and the first letter of your family name: ex. yanivc - for yaniv cohen"
 }
 
