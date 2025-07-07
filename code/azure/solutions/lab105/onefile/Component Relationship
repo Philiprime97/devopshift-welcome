@@ -1,0 +1,19 @@
+[Resource Group]
+     ├── VNet
+     │     └── Subnet
+     ├── NSG
+     │     └── Attached to NICs
+     ├── Load Balancer
+     │     ├── Public IP
+     │     ├── Backend Pool ← NICs
+     │     ├── Probe → /welcome.html
+     │     └── Rule (Port 80)
+     ├── Public IPs for VMs
+     ├── NICs
+     │     ├── Connected to Subnet
+     │     ├── Uses Public IPs
+     │     ├── Attached to NSG
+     │     └── Linked to LB Pool
+     └── Linux VMs
+           ├── Connected to NICs
+           └── Run Apache via null_resource
