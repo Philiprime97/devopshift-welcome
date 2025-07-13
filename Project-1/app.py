@@ -7,7 +7,7 @@ import time
 def get_user_input():
     region = input("Region (only us-east-2): ").strip()
     if region != "us-east-2":
-        print("⚠️  Only 'us-east-2' is allowed. Defaulting to us-east-2.")
+        print("Only 'us-east-2' is allowed. Defaulting to us-east-2.")
         region = "us-east-2"
 
     ami = input("AMI (ubuntu / amazon): ").strip().lower()
@@ -77,10 +77,11 @@ def main():
     render_template(variables)
 
     output = run_terraform()
+    print(output)
     
-    print(" Waiting 20 seconds for AWS resources to fully initialize...")
+    print("Waiting 20 seconds for AWS resources to fully initialize...")
     time.sleep(20)  # Wait 20 seconds
-    
+    print(output)
     # instance_id = output["web_server_id"]["value"]
     # alb_name = variables["load_balancer_name"]
     
