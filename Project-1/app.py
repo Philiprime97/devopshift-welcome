@@ -1,31 +1,30 @@
 from jinja2 import Environment, FileSystemLoader
 from python_terraform import Terraform
 import boto3, json
+import time
 
 # --- Ask user for input ---
 def get_user_input():
     region = input("Region (only us-east-2): ").strip()
     if region != "us-east-2":
-        print("Using default: us-east-1")
+        print("⚠️  Only 'us-east-2' is allowed. Defaulting to us-east-2.")
         region = "us-east-2"
 
-    ami = input("AMI (Ubuntu Server 24.04 LTS AMI / Amazon Linux 2023 kernel-6.1 AMI): ").strip()
+    ami = input("AMI (ubuntu / amazon): ").strip().lower()
     ami_map = {
-        "Ubuntu Server 24.04 LTS AMI ": "ami-042b4708b1d05f512",
-        "Amazon Linux 2023 kernel-6.1 AMI": "ami-09278528675a8d54e"
+        "ubuntu": "ami-042b4708b1d05f512",
+        "amazon": "ami-09278528675a8d54e"
     }
-    ami_id = ami_map.get(ami, ami_map["ubuntu"])
+    ami_id = ami_map.get(ami, ami_map["amazon"])
 
     inst_type = input("Instance Type (t3.small/t3.medium): ").strip()
     if inst_type not in ["t3.small", "t3.medium"]:
+        print("⚠️  Invalid instance type. Using default: t3.small")
         inst_type = "t3.small"
-
 
     alb = input("Load Balancer Name: ").strip()
     if alb == "":
         alb = "my-alb"
-
-
 
     return {
         "region": region,
@@ -34,12 +33,12 @@ def get_user_input():
         "load_balancer_name": alb
     }
 
-# --- Render main.tf from the template ---
+# --- Creates main.tf file from the template ---
 def render_template(variables):
     env = Environment(loader=FileSystemLoader('.'))
     template = env.get_template('main.tf.j2')
     rendered = template.render(variables)
-    with open("app.py", "w") as f:
+    with open("main.tf", "w") as f:
         f.write(rendered)
 
 # --- Run terraform ---
@@ -72,13 +71,28 @@ def validate_with_boto(instance_id, alb_name):
 
 # --- MAIN FUNCTION ---
 def main():
-    config = get_user_input()
-    render_template(config)
-    run_terraform()
     
-    with open("aws_validation.json", "w") as f:
-        json.dump(result, f, indent=2)
-    print("Deployment successful. Results saved to aws_validation.json")
+    variables = get_user_input()
+    
+    render_template(variables)
+
+    output = run_terraform()
+    
+    print(" Waiting 20 seconds for AWS resources to fully initialize...")
+    time.sleep(20)  # Wait 20 seconds
+    
+    # instance_id = output["web_server_id"]["value"]
+    # alb_name = variables["load_balancer_name"]
+    
+    # validation = validate_with_boto(instance_id, alb_name)
+
+    # with open("aws_validation.json", "w") as f:
+    #     json.dump(validation, f, indent=2)
+
+    with open("terraform_output.json", "w") as f:
+        json.dump(output, f, indent=2)
+
+    print("Deployment successful.")
 
 if __name__ == "__main__":
     main()
