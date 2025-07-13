@@ -77,10 +77,9 @@ def main():
     render_template(variables)
 
     output = run_terraform()
-    print(output)
     
-    print("Waiting 20 seconds for AWS resources to fully initialize...")
-    time.sleep(20)  # Wait 20 seconds
+    print("Waiting 40 seconds for AWS resources to fully initialize...")
+    time.sleep(40)  # Wait 20 seconds
     print(output)
     # instance_id = output["web_server_id"]["value"]
     # alb_name = variables["load_balancer_name"]
