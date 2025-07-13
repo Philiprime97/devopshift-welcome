@@ -2,6 +2,7 @@ from jinja2 import Environment, FileSystemLoader
 from python_terraform import Terraform
 import boto3, json
 import time
+import os
 
 # --- Ask user for input ---
 def get_user_input():
@@ -35,6 +36,9 @@ def get_user_input():
 
 # --- Creates main.tf file from the template ---
 def render_template(variables):
+    if not os.path.exists('main.tf.j2'):
+        raise FileNotFoundError("Template file 'main.tf.j2' not found")
+    
     env = Environment(loader=FileSystemLoader('.'))
     template = env.get_template('main.tf.j2')
     rendered = template.render(variables)
@@ -43,11 +47,24 @@ def render_template(variables):
 
 # --- Run terraform ---
 def run_terraform():
-    tf = Terraform(working_dir=".")
-    tf.init()
-    tf.plan()
-    tf.apply(skip_plan=True)
-    return tf.output()
+    try:
+        tf = Terraform(working_dir=".")
+        return_code, stdout, stderr = tf.init()
+        if return_code != 0:
+            raise Exception(f"Terraform init failed: {stderr}")
+        
+        return_code, stdout, stderr = tf.plan()
+        if return_code != 0:
+            raise Exception(f"Terraform plan failed: {stderr}")
+        
+        return_code, stdout, stderr = tf.apply(skip_plan=True)
+        if return_code != 0:
+            raise Exception(f"Terraform apply failed: {stderr}")
+        
+        return tf.output()
+    except Exception as e:
+        print(f"Terraform error: {e}")
+        raise
 
 # --- Validate AWS resources ---
 def validate_with_boto(instance_id, alb_name):
