@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "{{ region }}"
+  region = "us-east-2"
 }
 
 locals {
@@ -36,8 +36,8 @@ resource "aws_security_group" "lb_sg97" {
 }
 
 resource "aws_instance" "web_server" {
-  ami                    = "{{ ami }}"
-  instance_type          = "{{ instance_type }}"
+  ami                    = "ami-0d1b5a8c13042c939"
+  instance_type          = "t3.small"
   subnet_id              = local.subnet_ids[0]
   vpc_security_group_ids = [aws_security_group.lb_sg97.id]
 
@@ -47,7 +47,7 @@ resource "aws_instance" "web_server" {
 }
 
 resource "aws_lb" "application_lb97" {
-  name               = "{{ load_balancer_name }}"
+  name               = "abc"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg97.id]
