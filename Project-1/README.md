@@ -13,7 +13,7 @@ This project was built as a training exercise. The goal is to deploy a single EC
   - The EC2 instance exists and is in a `running` state
   - The ALB exists and retrieves its DNS name  
 - Saves validation results into a JSON file
-- 
+
 
 # Tools & Technologies Used
 - **Terraform** – for provisioning AWS infrastructure  
@@ -43,7 +43,7 @@ This project was built as a training exercise. The goal is to deploy a single EC
    -	Display the ALB DNS name
 
  # Project Files
-   -	 main.py - Main script to deploy EC2 and ALB
+   -	main.py - Main script to deploy EC2 and ALB
    - 	main.tf.j2 - Jinja2 template used to generate main.tf
    - 	terraform_output.json - Stores outputs results from Terraform
    - 	aws_validation.json - Stores validation result from AWS
