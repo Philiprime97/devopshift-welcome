@@ -41,7 +41,7 @@ resource "aws_security_group" "lb_sg977" {
 # EC2 Instance
 resource "aws_instance" "web_server_philip" {
   ami                    = "ami-0d1b5a8c13042c939"
-  instance_type          = "t2.micro"
+  instance_type          = "t3.small"
   subnet_id              = local.subnet_ids[0]
   vpc_security_group_ids = [aws_security_group.lb_sg977.id]
   associate_public_ip_address = true
@@ -62,7 +62,7 @@ resource "aws_instance" "web_server_philip" {
 
 # Application Load Balancer
 resource "aws_lb" "application_lb977" {
-  name               = "abc-philip"
+  name               = "lb-philip"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg977.id]

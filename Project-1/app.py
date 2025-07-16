@@ -56,10 +56,10 @@ def run_terraform():
         if return_code != 0:
             raise Exception(f"Terraform init failed: {stderr}")
         
-        print("Running: terraform plan...")
-        return_code, stdout, stderr = tf.plan()
-        if return_code != 0:
-            raise Exception(f"Terraform plan failed: {stderr}")
+        # print("Running: terraform plan...")
+        # return_code, stdout, stderr = tf.plan()
+        # if return_code != 0:
+        #     raise Exception(f"Terraform plan failed: {stderr}")
         
         print("Running: terraform apply...")
         return_code, stdout, stderr = tf.apply(skip_plan=True)
@@ -144,33 +144,39 @@ def main():
     try:
         variables = get_user_input()
         render_template(variables)
-        run_terraform()
+
+        # Capture output from Terraform
+        output = run_terraform()
         
         print("Waiting 240 seconds for AWS resources to fully initialize...")
         time.sleep(240)
-        
-        # Extract instance ID and ALB name from Terraform output and user input
+
+        # Save terraform output to JSON
+        with open("terraform_output.json", "w") as f:
+            json.dump(output, f, indent=2)
+        print("Terraform output saved to terraform_output.json")
+
+        # Extract instance ID from Terraform output
         instance_id = output.get("web_server_philip_id", {}).get("value")
         alb_name = variables["load_balancer_name"]
 
         if not instance_id:
             raise Exception("Instance ID not found in Terraform output.")
 
-        # AWS validation with boto3 - capture the returned validation data
-        validation_result = aws_validation(variables["region"], public_ip, state, instance_id, alb_name)
+        # AWS validation using boto3
+        validation_result = aws_validation(variables["region"], instance_id, alb_name)
 
-        # Optional: Do something with validation_result, e.g. print again or process
         print("\nValidation data returned from aws_validation():")
-        print(validation_result)
-        
-        with open("terraform_output.json", "w") as f:
-            json.dump(output, f, indent=2)
+        print(json.dumps(validation_result, indent=2))
 
-        print("Deployment successful. Output saved to terraform_output.json")
-        
+        print("\nDeployment and validation completed successfully.")
 
     except Exception as e:
-        print(f"Script failed: {e}")
+        print(f"\nScript failed: {e}")
+
+
+
+
 
 if __name__ == "__main__":
     main()
