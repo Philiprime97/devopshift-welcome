@@ -72,17 +72,96 @@ def run_terraform():
         raise
 
 
+ # --- AWS Validation using boto3 ---   
+def aws_validation(region, instance_id, alb_name):
+    ec2 = boto3.client("ec2", region_name=region)
+    elbv2 = boto3.client("elbv2", region_name=region)
+
+    validation_data = {
+        "instance_id": None,
+        "instance_state": None,
+        "public_ip": None,
+        "load_balancer_dns": None
+    }
+
+    # Validate EC2 instance
+    try:
+        print("\nValidating EC2 instance...")
+        reservations = ec2.describe_instances(InstanceIds=[instance_id])['Reservations']
+        if not reservations:
+            raise Exception(f"No instance found with ID {instance_id}")
+
+        instance = reservations[0]['Instances'][0]
+        state = instance['State']['Name']
+        if state != "running":
+            raise Exception(f"Instance {instance_id} is not running. Current state: {state}")
+
+        public_ip = instance.get('PublicIpAddress')
+        if not public_ip:
+            raise Exception(f"Instance {instance_id} does not have a public IP assigned.")
+
+        validation_data["instance_id"] = instance_id
+        validation_data["instance_state"] = state
+        validation_data["public_ip"] = public_ip
+
+        print(f"Instance {instance_id} is running with public IP {public_ip}")
+
+    except Exception as e:
+        print(f"EC2 Validation Error: {e}")
+        raise
+
+    # Validate ALB
+    try:
+        print("\nValidating ALB...")
+        lbs = elbv2.describe_load_balancers(Names=[alb_name])['LoadBalancers']
+        if not lbs:
+            raise Exception(f"No load balancer found with name {alb_name}")
+
+        lb = lbs[0]
+        dns_name = lb['DNSName']
+        validation_data["load_balancer_dns"] = dns_name
+
+        print(f"ALB {alb_name} exists with DNS: {dns_name}")
+
+    except Exception as e:
+        print(f"ALB Validation Error: {e}")
+        raise
+
+    # Print validation data to CLI
+    print("\nAWS Validation Result:")
+    print(json.dumps(validation_data, indent=2))
+
+    # Save validation results to JSON file
+    with open("aws_validation.json", "w") as f:
+        json.dump(validation_data, f, indent=2)
+    print("\nValidation data saved to aws_validation.json")
+
+    return validation_data
+
+
 # --- MAIN ---
 def main():
     try:
         variables = get_user_input()
         render_template(variables)
-        
-        output = run_terraform()
+        run_terraform()
         
         print("Waiting 240 seconds for AWS resources to fully initialize...")
         time.sleep(240)
-        print(output)
+        
+        # Extract instance ID and ALB name from Terraform output and user input
+        instance_id = output.get("web_server_philip_id", {}).get("value")
+        alb_name = variables["load_balancer_name"]
+
+        if not instance_id:
+            raise Exception("Instance ID not found in Terraform output.")
+
+        # AWS validation with boto3 - capture the returned validation data
+        validation_result = aws_validation(variables["region"], public_ip, state, instance_id, alb_name)
+
+        # Optional: Do something with validation_result, e.g. print again or process
+        print("\nValidation data returned from aws_validation():")
+        print(validation_result)
         
         with open("terraform_output.json", "w") as f:
             json.dump(output, f, indent=2)

@@ -7,9 +7,9 @@ locals {
   subnet_ids = ["subnet-0dba81b888eb03998", "subnet-0caaa6ff3c583ca10"]
 }
 
-# Security Group for ALB and EC2
+# Security Group for EC2 and ALB
 resource "aws_security_group" "lb_sg977" {
-  name        = "lb_security_group977"
+  name        = "lb_security_group977_philip"
   description = "Allow HTTP and SSH inbound traffic"
   vpc_id      = local.vpc_id
 
@@ -38,13 +38,22 @@ resource "aws_security_group" "lb_sg977" {
   }
 }
 
-# EC2 Web Server
-resource "aws_instance" "web_server-philip" {
+# EC2 Instance
+resource "aws_instance" "web_server_philip" {
   ami                    = "ami-0d1b5a8c13042c939"
   instance_type          = "t2.micro"
   subnet_id              = local.subnet_ids[0]
   vpc_security_group_ids = [aws_security_group.lb_sg977.id]
+  associate_public_ip_address = true
 
+  user_data = <<-EOF
+              #!/bin/bash
+              apt update -y
+              apt install -y apache2
+              echo "<h1>Hello from Philip's EC2</h1>" > /var/www/html/index.html
+              systemctl start apache2
+              systemctl enable apache2
+              EOF
 
   tags = {
     Name = "Philip-WebServer"
@@ -53,16 +62,16 @@ resource "aws_instance" "web_server-philip" {
 
 # Application Load Balancer
 resource "aws_lb" "application_lb977" {
-  name               = "abc"
+  name               = "abc-philip"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg977.id]
   subnets            = local.subnet_ids
 }
 
-# Target Group for EC2
+# Target Group
 resource "aws_lb_target_group" "web_target_group977" {
-  name     = "web-target-group977"
+  name     = "web-target-group977-philip"
   port     = 80
   protocol = "HTTP"
   vpc_id   = local.vpc_id
@@ -81,11 +90,11 @@ resource "aws_lb_target_group" "web_target_group977" {
 # Attach EC2 to Target Group
 resource "aws_lb_target_group_attachment" "web_instance_attachment977" {
   target_group_arn = aws_lb_target_group.web_target_group977.arn
-  target_id        = aws_instance.web_server-philip.id
+  target_id        = aws_instance.web_server_philip.id
   port             = 80
 }
 
-# Listener for ALB
+# Listener
 resource "aws_lb_listener" "http_listener977" {
   load_balancer_arn = aws_lb.application_lb977.arn
   port              = 80
@@ -98,12 +107,12 @@ resource "aws_lb_listener" "http_listener977" {
 }
 
 # Outputs
-output "web_server-philip_id" {
-  value = aws_instance.web_server-philip.id
+output "web_server_philip_id" {
+  value = aws_instance.web_server_philip.id
 }
 
-output "web_server-philip_public_ip" {
-  value = aws_instance.web_server-philip.public_ip
+output "web_server_philip_public_ip" {
+  value = aws_instance.web_server_philip.public_ip
 }
 
 output "alb_dns_name" {
