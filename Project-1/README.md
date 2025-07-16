@@ -48,4 +48,6 @@ This project was built as a training exercise. The goal is to deploy a single EC
    - 	terraform_output.json - Stores outputs results from Terraform
    - 	aws_validation.json - Stores validation result from AWS
 
+# Output
+<img width="1032" height="433" alt="Screenshot 2025-07-16 at 17 42 14" src="https://github.com/user-attachments/assets/65df0c87-2251-45c8-94a1-f7819385aae7" />
 
