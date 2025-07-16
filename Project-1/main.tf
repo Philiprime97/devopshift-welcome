@@ -3,15 +3,18 @@ provider "aws" {
 }
 
 locals {
-  vpc_id     = "vpc-0a691b1cda1dea4be"
-  subnet_ids = ["subnet-09a9b4fe4e74051b3", "subnet-0fa3e3e7dad301962"]
+  vpc_id     = "vpc-084687c42bc6b6be7"
+  subnet_ids = ["subnet-0dba81b888eb03998", "subnet-0caaa6ff3c583ca10"]
 }
 
-resource "aws_security_group" "lb_sg97" {
-  name        = "lb_security_group97"
+# Security Group for ALB and EC2
+resource "aws_security_group" "lb_sg977" {
+  name        = "lb_security_group977"
   description = "Allow HTTP and SSH inbound traffic"
+  vpc_id      = local.vpc_id
 
   ingress {
+    description = "Allow HTTP"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -19,6 +22,7 @@ resource "aws_security_group" "lb_sg97" {
   }
 
   ingress {
+    description = "Allow SSH"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -26,36 +30,39 @@ resource "aws_security_group" "lb_sg97" {
   }
 
   egress {
+    description = "Allow all outbound"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-  vpc_id = local.vpc_id
 }
 
-resource "aws_instance" "web_server" {
+# EC2 Web Server
+resource "aws_instance" "web_server-philip" {
   ami                    = "ami-0d1b5a8c13042c939"
-  instance_type          = "t3.small"
+  instance_type          = "t2.micro"
   subnet_id              = local.subnet_ids[0]
-  vpc_security_group_ids = [aws_security_group.lb_sg97.id]
+  vpc_security_group_ids = [aws_security_group.lb_sg977.id]
+
 
   tags = {
-    Name = "WebServer"
+    Name = "Philip-WebServer"
   }
 }
 
-resource "aws_lb" "application_lb97" {
+# Application Load Balancer
+resource "aws_lb" "application_lb977" {
   name               = "abc"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.lb_sg97.id]
+  security_groups    = [aws_security_group.lb_sg977.id]
   subnets            = local.subnet_ids
 }
 
-resource "aws_lb_target_group" "web_target_group97" {
-  name     = "web-target-group97"
+# Target Group for EC2
+resource "aws_lb_target_group" "web_target_group977" {
+  name     = "web-target-group977"
   port     = 80
   protocol = "HTTP"
   vpc_id   = local.vpc_id
@@ -68,36 +75,37 @@ resource "aws_lb_target_group" "web_target_group97" {
     interval            = 30
     path                = "/"
     matcher             = "200"
-    port                = "traffic-port"
-    protocol            = "HTTP"
   }
 }
 
-resource "aws_lb_target_group_attachment" "web_instance_attachment97" {
-  target_group_arn = aws_lb_target_group.web_target_group97.arn
-  target_id        = aws_instance.web_server.id
+# Attach EC2 to Target Group
+resource "aws_lb_target_group_attachment" "web_instance_attachment977" {
+  target_group_arn = aws_lb_target_group.web_target_group977.arn
+  target_id        = aws_instance.web_server-philip.id
   port             = 80
 }
 
-resource "aws_lb_listener" "http_listener97" {
-  load_balancer_arn = aws_lb.application_lb97.arn
+# Listener for ALB
+resource "aws_lb_listener" "http_listener977" {
+  load_balancer_arn = aws_lb.application_lb977.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.web_target_group97.arn
+    target_group_arn = aws_lb_target_group.web_target_group977.arn
   }
 }
 
-output "web_server_id" {
-  value = aws_instance.web_server.id
+# Outputs
+output "web_server-philip_id" {
+  value = aws_instance.web_server-philip.id
 }
 
-output "web_server_public_ip" {
-  value = aws_instance.web_server.public_ip
+output "web_server-philip_public_ip" {
+  value = aws_instance.web_server-philip.public_ip
 }
 
 output "alb_dns_name" {
-  value = aws_lb.application_lb97.dns_name
+  value = aws_lb.application_lb977.dns_name
 }

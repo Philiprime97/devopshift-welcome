@@ -80,8 +80,8 @@ def main():
         
         output = run_terraform()
         
-        print("Waiting 40 seconds for AWS resources to fully initialize...")
-        time.sleep(40)
+        print("Waiting 240 seconds for AWS resources to fully initialize...")
+        time.sleep(240)
         print(output)
         
         with open("terraform_output.json", "w") as f:
