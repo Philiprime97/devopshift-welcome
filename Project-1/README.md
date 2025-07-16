@@ -1,8 +1,7 @@
-# AWS EC2 Deploy Project
-This project was built as a school exercise. The goal is to deploy a single EC2 instance and an Application Load Balancer (ALB) on AWS using **Terraform** and **Python**.
+# AWS EC2 and ALB Deploy Project
+This project was built as a training exercise. The goal is to deploy a single EC2 instance and an Application Load Balancer (ALB) on AWS using **Terraform** and **Python**.
 
 # What the Project Does
-
 - Prompts the user for input:  
   - AMI type (Ubuntu or Amazon Linux)  
   - EC2 instance type  
@@ -17,7 +16,6 @@ This project was built as a school exercise. The goal is to deploy a single EC2 
 - 
 
 # Tools & Technologies Used
-
 - **Terraform** – for provisioning AWS infrastructure  
 - **Python** – the orchestration logic  
 - **Jinja2** – for generating `.tf` files dynamically  
@@ -26,13 +24,12 @@ This project was built as a school exercise. The goal is to deploy a single EC2 
 
 
 # How to Run It
-
-Set AWS Credentials
+1.Set AWS Credentials
   - export AWS_ACCESS_KEY_ID=your_access_key
   - export AWS_SECRET_ACCESS_KEY=your_secret_key
   - export AWS_DEFAULT_REGION=us-east-2
 
-Run the Deployment Script
+2.Run the Deployment Script
    - python3 app.py
    
    The script will ask you for:
@@ -46,9 +43,9 @@ Run the Deployment Script
 	•	Display the ALB DNS name
 
  # Project Files
-main.py - Main script to deploy EC2 and ALB
-main.tf.j2 - Jinja2 template used to generate main.tf
-terraform_output.json - Stores outputs results from Terraform
-aws_validation.json - Stores validation result from AWS
+• main.py - Main script to deploy EC2 and ALB
+• main.tf.j2 - Jinja2 template used to generate main.tf
+• terraform_output.json - Stores outputs results from Terraform
+• aws_validation.json - Stores validation result from AWS
 
 
