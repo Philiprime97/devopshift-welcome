@@ -33,7 +33,7 @@ pip install boto3 jinja2 python-terraform
 🚀 Quick Start
 1. Environment Setup
 # Clone the repository
-git clone <repository-url>
+.git clone <repository-url>
 cd aws-automation-project
 
 # Create and activate virtual environment
