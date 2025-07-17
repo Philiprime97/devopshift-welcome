@@ -138,7 +138,7 @@ The script will:
 
 | File | Description |
 |------|-------------|
-| `main.py` | Main script to deploy EC2 and ALB |
+| `app.py` | Main script to deploy EC2 and ALB |
 | `main.tf.j2` | Jinja2 template used to generate `main.tf` |
 | `terraform_output.json` | Stores output results from Terraform |
 | `aws_validation.json` | Stores validation result from AWS |
