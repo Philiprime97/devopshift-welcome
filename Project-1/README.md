@@ -56,7 +56,7 @@ pip install boto3 jinja2 python-terraform
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd aws-automation-project
+cd Project-1
 
 # Create and activate virtual environment
 python -m venv venv
