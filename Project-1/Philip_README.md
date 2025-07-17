@@ -100,15 +100,27 @@ python validate_aws.py
 Check `aws_validation.json` for confirmation and results.
 
 ---
-### ✅ Jinja installation Order:
-  1.	Security Group (required by both ALB and EC2)
-	2.	ALB resources:
-	•	aws_lb
-	•	aws_lb_target_group
-	•	aws_lb_listener
-	3.	EC2 Instance (depends on SG and optionally listener)
-	4.	Target Group Attachment (depends on EC2 and Target Group)
-	5.	Outputs
+
+## ✅ Jinja2 Template Resource Creation Order
+
+1. **Security Group**  
+   Required by both the ALB and EC2 instance.
+
+2. **ALB Resources**
+   - `aws_lb`
+   - `aws_lb_target_group`
+   - `aws_lb_listener`
+
+3. **EC2 Instance**  
+   Depends on the security group and optionally the ALB listener.
+
+4. **Target Group Attachment**  
+   Depends on both the EC2 instance and the target group.
+
+5. **Outputs**
+   - EC2 instance ID and public IP
+   - ALB DNS name
+
 
 ## 🧪 How to Run It Manually
 
