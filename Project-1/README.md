@@ -37,7 +37,7 @@ The goal is to deploy a single EC2 instance and an Application Load Balancer (AL
 
 - Python 3.7+
 - AWS CLI configured with appropriate credentials
-- Terraform installed and in PATH
+- Terraform installed 
 - Virtual environment (recommended)
 
 ### Install Required Python Packages
