@@ -35,8 +35,10 @@ The goal is to deploy a single EC2 instance and an Application Load Balancer (AL
 
 ## ⚙️ Prerequisites
 
-- Python 3.7+
+- Python 3.7+ installed
 - AWS CLI configured with appropriate credentials
+- boto3 installed
+- Jinja2 installed
 - Terraform installed 
 - Virtual environment (recommended)
 
