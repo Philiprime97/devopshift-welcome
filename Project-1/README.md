@@ -20,8 +20,47 @@ This project was built as a training exercise. The goal is to deploy a single EC
 - **Python** – the orchestration logic  
 - **Jinja2** – for generating `.tf` files dynamically  
 - **Boto3** – for validating resources on AWS   
-- AWS CLI – must be configured with valid credentials
+- **AWS** CLI – must be configured with valid credentials
 
+# Prerequisites
+Python 3.7+
+AWS CLI configured with appropriate credentials
+Terraform installed and in PATH
+Virtual environment (recommended)
+Required Python Packages
+pip install boto3 jinja2 python-terraform
+
+🚀 Quick Start
+1. Environment Setup
+# Clone the repository
+git clone <repository-url>
+cd aws-automation-project
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or
+source venv/Scripts/activate  # Windows Git Bash
+2. Run the Automation
+python main.py
+Follow the interactive prompts to configure:
+
+AMI ID
+Instance type
+Availability zone
+Load balancer name
+AWS region
+3. Deploy Infrastructure
+terraform init
+terraform apply
+4. Save Outputs
+terraform output -json > terraform_output.json
+5. Validate Deployment
+python validate_aws.py
+Check aws_validation.json for deployment confirmation details.
+
+6. Cleanup (Optional)
+terraform destroy
 
 # How to Run It
 1.Set AWS Credentials
