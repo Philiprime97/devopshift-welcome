@@ -38,35 +38,15 @@ resource "aws_security_group" "lb_sg977" {
   }
 }
 
-# EC2 Instance
-resource "aws_instance" "web_server_philip" {
-  ami                    = "ami-0d1b5a8c13042c939"
-  instance_type          = "t3.small"
-  subnet_id              = local.subnet_ids[0]
-  vpc_security_group_ids = [aws_security_group.lb_sg977.id]
-  associate_public_ip_address = true
-
-  user_data = <<-EOF
-              #!/bin/bash
-              apt update -y
-              apt install -y apache2
-              echo "<h1>Hello from Philip's EC2</h1>" > /var/www/html/index.html
-              systemctl start apache2
-              systemctl enable apache2
-              EOF
-
-  tags = {
-    Name = "Philip-WebServer"
-  }
-}
-
 # Application Load Balancer
 resource "aws_lb" "application_lb977" {
-  name               = "lb-philip"
+  name               = "alb-philip"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg977.id]
   subnets            = local.subnet_ids
+
+  depends_on = [aws_security_group.lb_sg977]
 }
 
 # Target Group
@@ -85,13 +65,8 @@ resource "aws_lb_target_group" "web_target_group977" {
     path                = "/"
     matcher             = "200"
   }
-}
 
-# Attach EC2 to Target Group
-resource "aws_lb_target_group_attachment" "web_instance_attachment977" {
-  target_group_arn = aws_lb_target_group.web_target_group977.arn
-  target_id        = aws_instance.web_server_philip.id
-  port             = 80
+  depends_on = [aws_lb.application_lb977]
 }
 
 # Listener
@@ -104,6 +79,35 @@ resource "aws_lb_listener" "http_listener977" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.web_target_group977.arn
   }
+
+  depends_on = [aws_lb_target_group.web_target_group977]
+}
+
+# EC2 Instance
+resource "aws_instance" "web_server_philip" {
+  ami                         = "ami-0d1b5a8c13042c939"
+  instance_type               = "t3.small"
+  subnet_id                   = local.subnet_ids[0]
+  vpc_security_group_ids      = [aws_security_group.lb_sg977.id]
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "Philip-WebServer"
+  }
+
+  depends_on = [aws_security_group.lb_sg977, aws_lb_listener.http_listener977]
+}
+
+# Attach EC2 to Target Group
+resource "aws_lb_target_group_attachment" "web_instance_attachment977" {
+  target_group_arn = aws_lb_target_group.web_target_group977.arn
+  target_id        = aws_instance.web_server_philip.id
+  port             = 80
+
+  depends_on = [
+    aws_instance.web_server_philip,
+    aws_lb_target_group.web_target_group977
+  ]
 }
 
 # Outputs
