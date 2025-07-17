@@ -75,7 +75,6 @@ python app.py
 You will be prompted to enter:
 - AMI ID
 - Instance type
-- Availability zone
 - Load Balancer name
 - AWS region
 
@@ -99,12 +98,6 @@ python validate_aws.py
 ```
 
 Check `aws_validation.json` for confirmation and results.
-
-### 6. Cleanup (Optional)
-
-```bash
-terraform destroy
-```
 
 ---
 
