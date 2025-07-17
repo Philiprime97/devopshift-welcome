@@ -1,7 +1,7 @@
 # AWS EC2 and ALB Deploy Project
 
 Developed as part of a **cloud infrastructure training** module, this project demonstrates how to combine **Python scripting**, **Terraform provisioning**, and **AWS services** to deploy scalable resources. It makes use of **Jinja2** for dynamic Terraform configuration, **Boto3** for validating AWS deployments, and the **AWS CLI** for managing authentication and access.
-The goal is to deploy a single EC2 instance and an Application Load Balancer (ALB) on AWS
+The goal is to deploy a single EC2 instance and an Application Load Balancer (ALB) on AWS.
 
 ## 🛠️ What the Project Does
 
