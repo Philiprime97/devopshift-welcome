@@ -68,7 +68,7 @@ source venv/Scripts/activate  # Windows Git Bash
 ### 2. Run the Deployment
 
 ```bash
-python main.py
+python app.py
 ```
 
 You will be prompted to enter:
