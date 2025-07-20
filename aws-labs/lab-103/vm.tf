@@ -2,7 +2,9 @@ resource "aws_instance" "vm" {
  ami                         = var.ami
  instance_type               = var.vm_size
  vpc_security_group_ids      = [aws_security_group.sg.id]
- subnet_id                   = var.subnet_id
+ subnet_id                   = aws_subnet.main_subnet.id
+ associate_public_ip_address = true
+
 
  tags = {
    Name = var.vm_name
@@ -20,7 +22,10 @@ resource "aws_instance" "vm" {
         sudo systemctl restart sshd
     EOF
 
+    depends_on = [aws_internet_gateway.igw]
  }
+
+
 
 output "vm_public_ip" {
  value = aws_instance.vm.public_ip

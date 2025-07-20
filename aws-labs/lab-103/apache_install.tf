@@ -10,6 +10,7 @@ resource "null_resource" "provision_apache" {
 
   provisioner "remote-exec" {
     inline = [
+      "sleep 40",
       "sudo dnf update",
       "sudo dnf install -y httpd",
       "echo '<h1>Welcome ${var.Name} to the Web Server!</h1>' | sudo tee /var/www/html/welcome.html",

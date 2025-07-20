@@ -3,11 +3,11 @@ provider "aws" {
 }
 
 variable "region" {
- default = "us-west-1"
+ default = "us-east-1"
 }
 
 variable "ami" {
- default = "ami-061ad72bc140532fd"
+ default = "ami-0150ccaf51ab55a51"
  }
 
 variable "vm_name" {
@@ -26,10 +26,16 @@ variable "vm_size" {
  default = "t2.micro"
 }
 
-variable "subnet_id" {
- default = "subnet-06acd0b316280afeb"
+variable "vpc_name" {
+ default = "philip_vpc"
 }
+
+variable "subnet_name" {
+ default = "philip_subnet"
+}
+
 
 variable "Name" {
  default = "Philip"
 }
+

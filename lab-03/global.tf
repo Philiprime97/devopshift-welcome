@@ -24,8 +24,8 @@ variable "admin_password" {
 }
 
 variable "location" {
-  default     = "East US"
-  description = "Azure region where resources will be deployed"
+  default     = "us-east-1"
+  description = "awsregion where resources will be deployed"
 }
 
 variable "vm_size" {
