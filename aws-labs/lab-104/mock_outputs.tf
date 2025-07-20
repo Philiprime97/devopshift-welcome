@@ -31,7 +31,6 @@ output "database" {
   description = "A message indicating if database is created."
 }
 
-
 output "db" {
-  services = var.create_database ? ["web", "api", "database"] : ["web", "api"]
+  value = var.create_database ? ["web", "api", "database"] : ["web", "api"]
 }
