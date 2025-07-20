@@ -25,3 +25,13 @@ output "mock_subnet_list" {
   value = [for subnet in local.subnets : "Configured ${subnet}"]
   description = "A mocked list of subnets that would be created based on high availability."
 }
+
+output "database" {
+  value = var.create_database ? "A mock database will be created for this environment." : "No database needed for this environment."
+  description = "A message indicating if database is created."
+}
+
+
+output "db" {
+  services = var.create_database ? ["web", "api", "database"] : ["web", "api"]
+}
