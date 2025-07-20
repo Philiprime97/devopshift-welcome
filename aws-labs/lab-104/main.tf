@@ -65,3 +65,8 @@ output "subnet_id" {
   value       = var.create_vpc ? aws_subnet.custom_subnet[0].id : "Subnet not created"
   description = "The ID of the custom subnet"
 }
+
+output "aws_instance_id" {
+  value       = aws_instance.example[0].id
+  description = "The ID of the EC2 instance"
+}
