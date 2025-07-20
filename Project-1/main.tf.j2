@@ -91,6 +91,15 @@ resource "aws_instance" "web_server_philip" {
   vpc_security_group_ids      = [aws_security_group.lb_sg977.id]
   associate_public_ip_address = true
 
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo apt update
+              sudo apt install -y apache2
+              echo "<h1>Hello from Terraform</h1>" > /var/www/html/index.html
+              sudo systemctl start apache2
+              sudo systemctl enable apache2
+            EOF
+
   tags = {
     Name = "Philip-WebServer"
   }
